@@ -43,6 +43,11 @@ export default function Home() {
       <div className="bg-white shadow-lg rounded-xl p-6 max-w-2xl w-full">
         <h1 className="text-2xl font-bold mb-4 text-center">AI Resume Generator</h1>
         <form onSubmit={handleSubmit} className="space-y-4">
+          <div className="bg-yellow-100 border border-yellow-300 text-yellow-800 p-3 rounded">
+            <strong>Demo Mode:</strong> This version does not use AI due to API costs. 
+            The resume below is generated locally from your input.
+          </div>
+
           <input
             type="text"
             name="name"

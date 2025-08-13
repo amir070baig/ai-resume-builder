@@ -1,33 +1,38 @@
-import {NextResponse} from "next/server";
-import OpenAI from "openai";
+import { NextResponse } from "next/server";
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
+export async function POST(req: Request) {
+  try {
+    const form = await req.json();
+    const { name, email, phone, linkedin, github, summary, skills, experience, education } = form;
 
-export async function POST(req: Request){
-  try{
-    const {name, role, experience, skills} = await req.json();
+    // Create a fake but realistic resume in demo mode
+    const resume = `
+Demo Mode: AI has been replaced with a sample generator for this public version.
 
-    const prompt = `
-      Create a professional, concise resume in bullet points for:
-      Name: ${name}
-      Role: ${role}
-      Experience: ${experience}
-      Skills: ${skills}
-      keep it recruiter-friendly and ATS-optimized.
-    `;
-    const completion = await openai.chat.completions.create({
-      model: "gpt-4o-mini",
-      messages: [{role: "user", content: prompt}],
-      temperature: 0.7,
-    });
+# ${name || "John Doe"}
+📧 ${email || "john.doe@email.com"} | 📱 ${phone || "123-456-7890"}
+${linkedin ? `🔗 LinkedIn: ${linkedin}` : ""}
+${github ? `💻 GitHub: ${github}` : ""}
 
-    const resume = completion.choices[0].message?.content || "";
+## Professional Summary
+${summary || "Passionate software developer with a knack for solving complex problems and building efficient solutions."}
 
-    return NextResponse.json({resume});
-  }catch(err){
-    console.error(err);
-    return NextResponse.json({error: "Something went wrong"}, {status: 500})
+## Skills
+${skills || "JavaScript, React, Node.js, Tailwind CSS"}
+
+## Experience
+${experience || "2"} years of experience in software development.
+- Developed responsive web applications
+- Collaborated with cross-functional teams
+- Delivered high-quality solutions on time
+
+## Education
+${education || "B.S. in Computer Science - Your University"}
+`;
+
+    return NextResponse.json({ resume });
+  } catch (error) {
+    console.error("Error generating resume:", error);
+    return NextResponse.json({ error: "Error generating resume" }, { status: 500 });
   }
 }
